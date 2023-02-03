@@ -1,0 +1,98 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  
+  <xs:element name="Attributes">
+  <xs:complexType>
+      <xs:all>
+  
+  
+  <xs:element name="subjective">
+    <xs:complexType>
+      <xs:all>
+        <xs:element name="man-machine_interface" type="xs:string" />
+        <xs:element name="Programming_flexibility" type="xs:string" />
+        <xs:element name="vendors_service_contract" type="xs:string" />
+        <xs:element name="simulation_software" type="xs:string" />
+        <xs:element name="stability" type="xs:string" />
+        <xs:element name="compliance" type="xs:string" />
+        <xs:element name="vendors_training" type="xs:boolean" />
+        <xs:element name="reliability" type="xs:string" />
+        <xs:element name="sensitivity" type="xs:string" />
+        <xs:element name="accuracy" type="xs:string" />
+      </xs:all>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="objective">
+    <xs:complexType>
+      <xs:all>
+        
+             <xs:element name="Load_capacity" type="xs:float" />
+             <xs:element name="speed_of_travel" type="xs:float" />
+          
+                 <xs:element name="memory RAM" type="xs:float" />
+                 <xs:element name="memory Rom" type="xs:float" />
+                 <xs:element name="memory flash" type="xs:float" />
+            	
+             <xs:element name="Warranty_period" type="xs:float" />
+
+
+			
+                 <xs:element name="vertical_Manipulator_reach" type="xs:float" />
+                 <xs:element name="horizontal_Manipulator_reach" type="xs:float" />
+            		
+             <xs:element name="degree_of_freedom" type="xs:float" />
+             <xs:element name="ambient_temperature" type="xs:float" />
+             <xs:element name="manipulator_velocity" type="xs:float" />
+             <xs:element name="Gripper_payload" type="xs:float" />
+             <xs:element name="battery life" type="xs:float" />
+           
+        
+              <xs:element name="repeatability_error" type="xs:float" />
+              <xs:element name="Delivery_time" type="xs:float" />
+              <xs:element name="reaction_speed" type="xs:float" />
+              
+                    <xs:element name="purchase_cost" type="xs:float" />
+                    <xs:element name="maintenance_cost" type="xs:float" />
+                 
+           
+      </xs:all>
+    </xs:complexType>
+  </xs:element>
+
+
+
+  <xs:element name="general">
+    <xs:complexType>
+      <xs:all>
+        <xs:element name="processor" type="xs:string" />
+        <xs:element name="type_of_robot" type="xs:string" />
+        
+      </xs:all>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="physical">
+    <xs:complexType>
+      <xs:all>
+        <xs:element name="actuators" type="xs:string" />
+       
+        <xs:element name="weight" type="xs:float" />
+        <xs:element name="height" type="xs:float" />
+        <xs:element name="width" type="xs:float" />
+      
+        <xs:element name="footprint" type="xs:float" />
+       
+      </xs:all>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="structure">
+    <xs:complexType>
+      <xs:all>
+        <xs:element name="type_of_joints" type="xs:string" />
+      </xs:all>
+    </xs:complexType>
+  </xs:element>
+ </xs:all>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
