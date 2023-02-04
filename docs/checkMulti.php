@@ -8,7 +8,18 @@
         $list = mysqli_fetch_array($result);
        
 
-   
+        // $a=array();
+        // if($result){
+        //     while ($row = $result->fetch_array()) 
+        //     {                
+        //             array_push($a,$row['rating']);    
+        //             //echo $row['rating'] ;             
+        //     }
+        //     echo json_encode($a);
+        // }
+        // else{
+        //     echo "no result";
+        // }
         mysqli_close($conn); 
         echo $list[0];
 ?>

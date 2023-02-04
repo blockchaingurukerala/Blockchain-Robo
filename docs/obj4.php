@@ -40,7 +40,8 @@ if($Overall_RS != 0 && !(is_null($Overall_RS))){
         }
    # echo  $Second_purposeRS;
    
-     return array ($min,$max);
+    //print_r array ($min,$max);
+    echo (string)$min .",".(string)$max;
 
  
  }

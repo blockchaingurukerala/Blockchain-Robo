@@ -222,14 +222,16 @@ const App = {
 							}
 							if($(selectedrobopurpose).val()=="2"){// if purpose1 rating
 								//predict p1 score using obj4
-								window.alert("no rating selected purpose2")
+								//window.alert("no rating selected purpose2")
 							   	r2=await $.post("../docs/obj4.php",{p1r:ratingPupose1,
 								p2r:App.selectedRatings[q],
 								r:ratingOverAll,
 								keywords1:keywords1,
 								keywords2:keywords2
 								})
-								window.alert("Predicted score is"+r2)
+								//window.alert("Predicted score is"+r2)
+								//console.log("r2"+r2)
+								//window.alert("wait and see.score...")
 								await $.post("../docs/updateMultiroboRating.php", {id: App.selectedRobos[q],r:"0",p1r:r2,p2r:App.selectedRatings[q],c:App.account,case:"0002",o:ratingOverAll,rs1:ratingPupose1,rs2:ratingPupose2});		
 							}
 						}
@@ -310,7 +312,7 @@ const App = {
 								await $.post("../docs/updateMultiroboRating.php", {id: App.selectedRobos[q],r:"0",p1r:App.selectedRatings[q],p2r:r2,c:App.account,case:"1011",o:ratingOverAll,rs1:ratingPupose1,rs2:ratingPupose2});	
 								
 							}
-							if($(selectedrobopurpose).val()=="2"){// if purpose1 rating
+							if($(selectedrobopurpose).val()=="2"){// if purpose2 rating
 								//predict p1 score using obj4
 								//window.alert("no rating selected purpose2")
 							   	r2=await $.post("../docs/obj4.php",{p1r:ratingPupose1,
