@@ -58,6 +58,7 @@ function insertDB($id,$r,$p1r,$p2r,$c,$case,$o,$rs1,$rs2){
       $query = "UPDATE rating SET overallscore='".$o."' where id='".$id."'";
       mysqli_query($conn, $query);
     }
+
     if($case=="1011"){
        //have all thge score and selected purpose1
        $avg=$o;
@@ -67,9 +68,14 @@ function insertDB($id,$r,$p1r,$p2r,$c,$case,$o,$rs1,$rs2){
        
       $query = "UPDATE rating SET purpose1score='".$p1r."' where id='".$id."'";
       mysqli_query($conn, $query);
-      $query = "UPDATE rating SET purpose2score='".$p2r."' where id='".$id."'";
-      mysqli_query($conn, $query);
       
+      if(!is_numeric($rs2)){
+        $query = "UPDATE rating SET purpose2score='".$p2r."' where id='".$id."'";
+        mysqli_query($conn, $query);
+      }
+      else{
+        $avg = (floatval($p1r)+floatval($rs2))/2;
+      }
       
       $query = "UPDATE rating SET overallscore='".$avg."' where id='".$id."'";
       mysqli_query($conn, $query);
@@ -81,10 +87,17 @@ function insertDB($id,$r,$p1r,$p2r,$c,$case,$o,$rs1,$rs2){
       if(!is_numeric($rs2)){
         $avg = (floatval($p2r)+floatval($rs1))/2;
       }
-     $query = "UPDATE rating SET purpose1score='".$p1r."' where id='".$id."'";
-     mysqli_query($conn, $query);
-     $query = "UPDATE rating SET purpose2score='".$p2r."' where id='".$id."'";
-     mysqli_query($conn, $query);
+      $query = "UPDATE rating SET purpose2score='".$p2r."' where id='".$id."'";
+      mysqli_query($conn, $query);
+     if(!is_numeric($rs1)){
+     
+      $query = "UPDATE rating SET purpose1score='".$p1r."' where id='".$id."'";
+      mysqli_query($conn, $query);
+     }
+     else{
+      $avg = (floatval($p2r)+floatval($rs1))/2;
+     }
+    
      
      $query = "UPDATE rating SET overallscore='".$avg."' where id='".$id."'";
      mysqli_query($conn, $query);

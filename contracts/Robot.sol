@@ -92,14 +92,14 @@ contract Robot {
 	mapping (address => string[]) public interests;
        mapping(address =>mapping(uint=>uint)) public allproposals;
 
-       mapping(uint=>uint[]) public subjectivedata;
+       mapping(uint=>string) public subjectivedata;
        mapping(uint=>uint[]) public objectivedata;
        constructor() public {  
               admin=msg.sender;    
        }
-        function getSbjectiveData (uint _id) public view returns(uint[] memory){
-              return subjectivedata[_id];
-       }
+        //function getSbjectiveData (uint _id) public view returns(uint[] memory){
+        //      return subjectivedata[_id];
+       //}
         function getObjectiveData (uint _id) public view returns(uint[] memory){
               return objectivedata[_id];
        }
@@ -117,7 +117,7 @@ contract Robot {
                    supplierCount++;  
               }
        }
-       function addNewRobot(string memory _p1,string memory _p2,string memory _rname,uint[] memory _sub,uint[] memory _obj,uint _pscore) public {
+       function addNewRobot(string memory _p1,string memory _p2,string memory _rname,string memory _sub,uint[] memory _obj,uint _pscore) public {
               totalRobots++;
               robotgeneralinformations[totalRobots] =RobotGeneralInformation(totalRobots,_p1,_p2,_rname,"false","false",0,0,"");            
               //robotsubjectattributes[totalRobots] =RobotSubjectAtribute(totalRobots,_mm,_pf,_st,_cp);

@@ -243,10 +243,23 @@ const App = {
 								var data=await $.post("../docs/rating.php", {id: App.selectedRobos[q]});
 								//data.append(App.selectedRatings[q]);
 								var myArray = JSON.parse(data);
+								var myarray2=[];
 								myArray.push(App.selectedRatings[q]);
 								//convert to int array
 								for(z=0;z<myArray.length;z++){
-									myArray[z]=parseInt(myArray[z]);
+
+									if(parseInt(myArray[z])!=0){
+										myArray[z]=parseInt(myArray[z]);
+										myarray2.push(parseInt(myArray[z]))
+									}
+									
+								}
+								var reputationscore=0;
+								if(myarray2.length==1){
+									reputationscore=parseInt(App.selectedRatings[q]);
+								}
+								else{
+									reputationscore=await $.post("../docs/NDR.php",{ r: myarray2} );
 								}
 								//console.log(myArray);
 								//caculating reputation score for each robot selected
@@ -269,19 +282,20 @@ const App = {
 							}
 							if($(selectedrobopurpose).val()=="2"){// if purpose1 rating
 								//predict p1 score using obj4
-								//window.alert("no rating selected purpose2")
-							   	r2=await $.post("../docs/obj4.php",{p1r:ratingPupose1,
-								p2r:App.selectedRatings[q],
+								
+								
+							   	r2=await $.post("../docs/obj4.php",{p1r:App.selectedRatings[q],
+								p2r:ratingPupose1,
 								r:ratingOverAll,
 								keywords1:keywords1,
 								keywords2:keywords2
 								})
-								//window.alert("Predicted score is"+r2)
+								
 								await $.post("../docs/updateMultiroboRating.php", {id: App.selectedRobos[q],r:"0",p1r:r2,p2r:App.selectedRatings[q],c:App.account,case:"0012",o:ratingOverAll,rs1:ratingPupose1,rs2:ratingPupose2});		
 							}
 						}
 
-						if(ratingPupose1!="0" && ratingPupose2!="0" && ratingOverAll!="0"){
+						if(ratingPupose1!="0" && ratingPupose2!="0" ){
 							//Case 3 have all the scores
 
 							if($(selectedrobopurpose).val()=="0"){// if overall
@@ -315,8 +329,8 @@ const App = {
 							if($(selectedrobopurpose).val()=="2"){// if purpose2 rating
 								//predict p1 score using obj4
 								//window.alert("no rating selected purpose2")
-							   	r2=await $.post("../docs/obj4.php",{p1r:ratingPupose1,
-								p2r:App.selectedRatings[q],
+							   	r2=await $.post("../docs/obj4.php",{p1r:App.selectedRatings[q],
+								p2r:ratingPupose1,
 								r:ratingOverAll,
 								keywords1:keywords1,
 								keywords2:keywords2
@@ -330,21 +344,37 @@ const App = {
 
 
 					}
+					//If it is single
 					else{
 						//if Single purpose Robot
 						window.alert("selected single")	
 						var data=await $.post("../docs/rating.php", {id: App.selectedRobos[q]});
 						//data.append(App.selectedRatings[q]);
 						var myArray = JSON.parse(data);
+						var myarray2=[];
 						myArray.push(App.selectedRatings[q]);
 						//convert to int array
 						for(z=0;z<myArray.length;z++){
-							myArray[z]=parseInt(myArray[z]);
+
+							if(parseInt(myArray[z])!=0){
+								myArray[z]=parseInt(myArray[z]);
+								myarray2.push(parseInt(myArray[z]))
+							}
+							
 						}
-						console.log(myArray);
+						var reputationscore=0;
+						if(myarray2.length==1){
+							reputationscore=parseInt(App.selectedRatings[q]);
+						}
+						else{
+							reputationscore=await $.post("../docs/NDR.php",{ r: myarray2} );
+						}
+						console.log(myarray2);
+						window.alert("check current ratin")
 						//caculating reputation score for each robot selected
-						var reputationscore=await $.post("../docs/NDR.php",{ r: myArray} );
+						
 						console.log("Reputation score="+reputationscore);
+						window.alert("Check NDR value");
 						//For handlig decimal values
 						reputationscores.push(reputationscore*100);
 						//updating database
@@ -684,19 +714,19 @@ const App = {
 
 
 			var robotname=$("#robotname").val();
-			var subjectivedata=[];
+			var subjectivedata="";
 			var objectivedata=[];
 			var r2=[];
-			for(var q=0;q<50;q++){
-				var id="#subjective"+q.toString();	
-				if( $(id).length ){
-					var d=$(id).val();										
-					if(d){
-						subjectivedata.push(parseInt(parseFloat(d)*100));
-						r2.push(parseFloat(d).toFixed(2));
-					}	
-				} 			
-			}
+			// for(var q=0;q<50;q++){
+			// 	var id="#subjective"+q.toString();	
+			// 	if( $(id).length ){
+			// 		var d=$(id).val();										
+			// 		if(d){
+			// 			subjectivedata.push(parseInt(parseFloat(d)*100));
+			// 			r2.push(parseFloat(d).toFixed(2));
+			// 		}	
+			// 	} 			
+			// }
 			//console.log(r2);
 			for(var q=0;q<50;q++){
 				var id="#objective"+q.toString();	
@@ -708,7 +738,7 @@ const App = {
 					}
 				} 			
 			}
-			console.log(subjectivedata);
+			//console.log(subjectivedata);
 			console.log(objectivedata);
 			//calculate Predicted Score for this Robot
 			var maxsimilarity=0;
@@ -721,22 +751,18 @@ const App = {
 					if(pupose.toUpperCase().localeCompare(purpose1.toUpperCase())==0){
 						//Same pupose Robot found
 						//Going to calculate similarity
-						var s=await App.robot.getSbjectiveData(parseInt(i));
+						//var s=await App.robot.getSbjectiveData(parseInt(i));
 						var o=await App.robot.getObjectiveData(parseInt(i));
 						var r1=[];
-						for(var z=0;z<s.length;z++){
-							var x=parseFloat(s[z]/100).toFixed(2);
-							r1.push(x);
-						}
+						// for(var z=0;z<s.length;z++){
+						// 	var x=parseFloat(s[z]/100).toFixed(2);
+						// 	r1.push(x);
+						// }
 						for(var z=0;z<o.length;z++){
 							var x=parseFloat(o[z]/100).toFixed(2);
 							r1.push(x);
 						}
-						console.log("Finding Similarity ");
-						console.log("r1=");
-						console.log(r1);
-						console.log("r2=");
-						console.log(r2);
+						
 						var similarity=await $.post("../docs/ScorePredictionFunction.php",{ r1: r1,r2:r2} );
 						console.log("Similarity recieved="+similarity)
 						if(similarity>maxsimilarity){

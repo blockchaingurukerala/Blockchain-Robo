@@ -173,7 +173,7 @@
 
            
             
-            <table class="table" style="border: 1px solid;margin-left: 20%;">
+            <table class="table purposetworow" style="display:none; border: 1px solid;margin-left: 20%;">
            
               <tr>
                 <td colspan="2" style="text-align:center;"> <h5>Purpose1 Description</h5></td>
