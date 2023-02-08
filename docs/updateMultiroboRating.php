@@ -102,8 +102,13 @@ function insertDB($id,$r,$p1r,$p2r,$c,$case,$o,$rs1,$rs2){
      $query = "UPDATE rating SET overallscore='".$avg."' where id='".$id."'";
      mysqli_query($conn, $query);
    }
-   
+
+    
+    $query = "select overallscore from rating where id='".$id."' limit 1";
+    $result0 = mysqli_query($conn, $query); 
+    $list = mysqli_fetch_array($result0);
+    
     mysqli_close($conn);
-    echo $result;
+    echo $list[0];
 }
 ?>
