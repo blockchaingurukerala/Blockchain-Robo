@@ -212,7 +212,7 @@
             <table class="table purposetworow" style="display:none;">
               <tr>
               <td>purpose2</td>
-                <td><input class="form-control" type="text" id="purpose2"></td>
+                <td><input class="form-control" type="text" id="purpose2" required></td>
               </tr>
             </table>
             <table class="table purposetworow" style="border: 1px solid;margin-left: 20%;display:none;">

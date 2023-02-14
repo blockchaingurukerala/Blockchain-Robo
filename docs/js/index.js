@@ -158,6 +158,7 @@ const App = {
 			App.selectedRobos=[];
 			App.selectedRatings=[];
 			var reputationscores=[];
+			var purposerated=[];
 
 			var count=await App.robot.totalRobots();
 			for(var i=1;i<=count;i++) {
@@ -198,9 +199,22 @@ const App = {
 						var ratingPupose2=await $.post("../docs/getPurpose2Rating.php", {id: App.selectedRobos[q]});
 						
 						var selectedrobopurpose="#selectrobopurpose"+App.selectedRobos[q].toString();
+
+						if($(selectedrobopurpose).val()=="0"){// if overall
+							purposerated.push(0);
+						}
+						if($(selectedrobopurpose).val()=="1"){// if purpose1 rating
+							purposerated.push(1)
+						}
+						if($(selectedrobopurpose).val()=="2"){ //If purpose2
+							purposerated.push(2)
+						}
+
 						//window.alert(selectedrobopurpose)
 						//window.alert($(selectedrobopurpose).val())
 						//case1. Not at all rated
+
+
 						if(ratingPupose1=="0" && ratingPupose2=="0" && ratingOverAll=="0"){
 							if($(selectedrobopurpose).val()=="0"){// if overall
 								
@@ -221,7 +235,7 @@ const App = {
 								reputationscores.push(Number(p)*100);
 
 							}
-							if($(selectedrobopurpose).val()=="2"){// if purpose1 rating
+							if($(selectedrobopurpose).val()=="2"){// if purpose rating
 								//predict p1 score using obj4
 								//window.alert("no rating selected purpose2")
 							   	r2=await $.post("../docs/obj4.php",{p1r:ratingPupose1,
@@ -355,7 +369,8 @@ const App = {
 					//If it is single
 					else{
 						//if Single purpose Robot
-						window.alert("selected single")	
+						//window.alert("selected single")	
+
 						var data=await $.post("../docs/rating.php", {id: App.selectedRobos[q]});
 						//data.append(App.selectedRatings[q]);
 						var myArray = JSON.parse(data);
@@ -385,6 +400,7 @@ const App = {
 						//window.alert("Check NDR value");
 						//For handlig decimal values
 						reputationscores.push(reputationscore*100);
+						purposerated.push(10); //If single purpose
 						//updating database
 						var p=await $.post("../docs/updateSingleRoboRating.php", {id: App.selectedRobos[q],r:App.selectedRatings[q],p1r:reputationscore,c:App.account})
 						//window.alert("updated"+p)
@@ -394,7 +410,10 @@ const App = {
 				
 				}
 				//console.log(reputationscores)
-				await App.robot.addRatings(reputationscores,App.selectedRobos,{from:App.account});
+				console.log("Purpose1 or overall or purpose2"+purposerated);
+				console.log("Selewcted robos id"+ App.selectedRobos);
+				window.alert("check purpose rated on console 0 overall 1 purpose1 2 purpose2 and 10 single")
+				await App.robot.addRatings(reputationscores,App.selectedRobos,purposerated,{from:App.account});
 				form.submit();
 			}			
 			else{
@@ -465,18 +484,46 @@ const App = {
 				var purpose='';
 				multipurpose=false;
 				vardropdownstr='';
+				var rated;
 				if(roboinfo[2]!=""){
 					purpose=roboinfo[1]+","+roboinfo[2];
 					multipurpose=true;
-					vardropdownstr=`<select class="form-control" id='selectrobopurpose`+i+`' name="robo_purpose[]" ><option value="0">Overall</option><option value="1">`+roboinfo[1]+`</option><option value="2">`+roboinfo[2]+`</option></select>`;
-					console.log(vardropdownstr);
+					var opt=``;
+					var o=await App.robot.multi_ovrall_rated_or_not(App.account,i);
+					if(o!="1"){
+						opt=`<option value="0">Overall</option>`;
+					}
+					var p1=await App.robot.multi_purpose1_rated_or_not(App.account,i);
+					if(p1!="1"){
+						opt=opt+`<option value="1">`+roboinfo[1]+`</option>`;
+					}
+					var p2=await App.robot.multi_purpose2_rated_or_not(App.account,i);
+					if(p2!="1"){
+						opt=opt+`<option value="2">`+roboinfo[2]+`</option>`;
+					}
+					vardropdownstr=`<select class="form-control" id='selectrobopurpose`+i+`' name="robo_purpose[]" >`+opt+`</select>`;
+					if(o=="1" && p1=="1" && p2=="1"){
+						rated="1";
+					}
+					else{
+						rated="0"
+					}
+				    window.alert("I am multi")
+					window.alert("o"+o)
+					window.alert("p1"+p1)
+					window.alert("p2"+p2)
+
 				}
 				else{
 					purpose=roboinfo[1]	;
 					multipurpose=false;
 					vardropdownstr=`<input type="text" class="form-control" value='`+purpose+`'  name="robo_purpose[]" readonly>`;
+					rated=await App.robot.ratedotnot(App.account,i);
+					window.alert("Iam single")
+					window.alert("rated"+rated)
 				}
-				var rated=await App.robot.ratedotnot(App.account,i);
+				 
+
 				if(rated=="1"){
 					str="<tr><td>"+`<input type="checkbox" id='selectedRobo`+i+`' name="robo_checkBox[]" disabled>`+"</td><td>"+`<input type="text" class="form-control" value='`+roboinfo[0]+`'  name="robo_id[]" readonly>`+"</td><td>"+`<input type="text" class="form-control" value='`+roboinfo[3]+`'  name="robo_name[]" readonly>`+"</td><td>"+vardropdownstr+"</td><td>"+`<input type="text" class="form-control" value='`+avgRating.toString()+`'  name="robo_score[]" readonly>`+"</td><td>";
 				
@@ -491,6 +538,8 @@ const App = {
 				$("#displayallrobots").append(str);	
 			}			
 		}
+
+
 		var str1;
 		$("#displayallrobots").show();
 		var rated=await App.robot.rated(App.account);

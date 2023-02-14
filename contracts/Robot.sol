@@ -86,6 +86,9 @@ contract Robot {
        }        
        mapping(uint => RoboRating) public roboratings; 
        mapping(address =>mapping(uint=>uint)) public ratedotnot;
+       mapping(address =>mapping(uint=>uint)) public multi_ovrall_rated_or_not;
+       mapping(address =>mapping(uint=>uint)) public multi_purpose1_rated_or_not;
+       mapping(address =>mapping(uint=>uint)) public multi_purpose2_rated_or_not;
        mapping(uint => address) public robotowners;
        mapping(address => string) public roles; 
        mapping(address => string) public rated; 
@@ -205,14 +208,25 @@ contract Robot {
                      ratedotnot[msg.sender][_roboid]=1;
               }
        }
-       function addRatings(uint [] memory ratings,uint [] memory robos) public {
+       function addRatings(uint [] memory ratings,uint [] memory robos,uint [] memory _puposerated) public {
 	       for(uint i=0;i<robos.length;i++){
                      uint _roboid=robos[i];
                      uint _rating=ratings[i];
                      uint totalcust=roboratings[_roboid].totalCustomersRated;
                      totalcust=totalcust+1;
                      roboratings[_roboid]=RoboRating(_roboid,totalcust,_rating);
-                     ratedotnot[msg.sender][_roboid]=1;
+                     if(_puposerated[i]==10){
+                            ratedotnot[msg.sender][_roboid]=1;
+                     }
+                     if(_puposerated[i]==0){
+                            multi_ovrall_rated_or_not[msg.sender][_roboid]=1;
+                     }
+                     if(_puposerated[i]==1){
+                           multi_purpose1_rated_or_not[msg.sender][_roboid]=1;
+                     }
+                     if(_puposerated[i]==2){
+                           multi_purpose2_rated_or_not[msg.sender][_roboid]=1;
+                     }
               }
        }
       
