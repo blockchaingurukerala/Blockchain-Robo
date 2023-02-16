@@ -445,8 +445,9 @@
                       <th>Select</th>
                       <th>ID</th>
                       <th>Robot Nme</th>
-                      <th>Pupose</th>
+                     
                       <th>Reputation Score</th>
+                      <th>Pupose</th>
                       <th>Your Rating(/5)</th>
                     </tr>
                     <tbody id="displayallrobots" style="display: none;" ></tbody>
