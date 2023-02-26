@@ -316,7 +316,7 @@ const App = {
 
 						if(ratingPupose1!="0" && ratingPupose2!="0" ){
 							//Case 3 have all the scores
-
+							window.alert("rating1&rating 2 not eaqiual 0")
 							if($(selectedrobopurpose).val()=="0"){// if overall
 								var data=await $.post("../docs/rating.php", {id: App.selectedRobos[q]});
 								//data.append(App.selectedRatings[q]);
@@ -335,15 +335,56 @@ const App = {
 							}
 							if($(selectedrobopurpose).val()=="1"){// if purpose1 rating
 								//predict p2 score using obj4
-								
+								window.alert("selected pupose1")
+								var ndrvalue;
 							   	r2=await $.post("../docs/obj4.php",{p1r:App.selectedRatings[q],
 								p2r:ratingPupose2,
 								r:ratingOverAll,
 								keywords1:keywords1,
 								keywords2:keywords2
 								})
-								
-								var p=await $.post("../docs/updateMultiroboRating.php", {id: App.selectedRobos[q],r:"0",p1r:App.selectedRatings[q],p2r:r2,c:App.account,case:"1011",o:ratingOverAll,rs1:ratingPupose1,rs2:ratingPupose2});	
+								// if rs1 is not a number p1r=App.selectedRatings[q], else p1r is a result of NDR
+								if(isNaN(ratingPupose1)){
+									window.alert("Not calculating NDR=selected value")
+									ndrvalue=App.selectedRatings[q];
+								}
+								else{
+									window.alert("going to calculate NDR")
+									//calculate NDR value
+									var data=await $.post("../docs/getPupose1ratings.php", {id: App.selectedRobos[q]});
+									console.log(data);
+									window.alert("check purpose1 ratings")
+
+									//data.append(App.selectedRatings[q]);
+									var myArray = JSON.parse(data);
+									var myarray2=[];
+									myArray.push(App.selectedRatings[q]);
+									//convert to int array
+									for(z=0;z<myArray.length;z++){
+
+										if(parseInt(myArray[z])!=0){
+											myArray[z]=parseInt(myArray[z]);
+											myarray2.push(parseInt(myArray[z]))
+										}
+										
+									}
+									var reputationscore=0;
+									if(myarray2.length==1){
+										reputationscore=parseInt(App.selectedRatings[q]);
+									}
+									else{
+										console.log(myarray2);
+										window.alert("check values to NDR")
+										reputationscore=await $.post("../docs/NDR.php",{ r: myarray2} );
+										console.log(reputationscore)
+										window.alert("check NDR value")
+
+									}
+									ndrvalue=reputationscore;
+
+								}
+
+								var p=await $.post("../docs/updateMultiroboRating.php", {id: App.selectedRobos[q],r:"0",p1r:App.selectedRatings[q],p2r:r2,c:App.account,case:"1011",o:ratingOverAll,rs1:ratingPupose1,rs2:ratingPupose2,"ndr":ndrvalue});	
 								reputationscores.push(Number(p)*100);
 								
 							}
@@ -357,7 +398,39 @@ const App = {
 								keywords2:keywords2
 								})
 								//window.alert("Predicted score is"+r2)
-								var p=await $.post("../docs/updateMultiroboRating.php", {id: App.selectedRobos[q],r:"0",p1r:r2,p2r:App.selectedRatings[q],c:App.account,case:"0111",o:ratingOverAll,rs1:ratingPupose1,rs2:ratingPupose2});	
+
+								// if rs1 is not a number p1r=App.selectedRatings[q], else p1r is a result of NDR
+								if(isNaN(ratingPupose2)){
+									ndrvalue=App.selectedRatings[q];
+								}
+								else{
+									//calculate NDR value
+									var data=await $.post("../docs/getPupose2ratings.php", {id: App.selectedRobos[q]});
+									//data.append(App.selectedRatings[q]);
+									var myArray = JSON.parse(data);
+									var myarray2=[];
+									myArray.push(App.selectedRatings[q]);
+									//convert to int array
+									for(z=0;z<myArray.length;z++){
+
+										if(parseInt(myArray[z])!=0){
+											myArray[z]=parseInt(myArray[z]);
+											myarray2.push(parseInt(myArray[z]))
+										}
+										
+									}
+									var reputationscore=0;
+									if(myarray2.length==1){
+										reputationscore=parseInt(App.selectedRatings[q]);
+									}
+									else{
+										reputationscore=await $.post("../docs/NDR.php",{ r: myarray2} );
+									}
+									ndrvalue=reputationscore;
+
+								}
+								
+								var p=await $.post("../docs/updateMultiroboRating.php", {id: App.selectedRobos[q],r:"0",p1r:r2,p2r:App.selectedRatings[q],c:App.account,case:"0111",o:ratingOverAll,rs1:ratingPupose1,rs2:ratingPupose2,"ndr":ndrvalue});	
 								reputationscores.push(Number(p)*100);	
 							}
 						}

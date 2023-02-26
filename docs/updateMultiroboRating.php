@@ -62,11 +62,12 @@ function insertDB($id,$r,$p1r,$p2r,$c,$case,$o,$rs1,$rs2){
     if($case=="1011"){
        //have all thge score and selected purpose1
        $avg=$o;
+       $ndrp1=$_REQUEST['ndr'];
        if(!is_numeric($rs1)){
-         $avg = (floatval($p1r)+floatval($rs2))/2;
+         $avg = (floatval($ndrp1)+floatval($rs2))/2;
        }
        
-      $query = "UPDATE rating SET purpose1score='".$p1r."' where id='".$id."'";
+      $query = "UPDATE rating SET purpose1score='".$ndrp1."' where id='".$id."'";
       mysqli_query($conn, $query);
       
       if(!is_numeric($rs2)){
@@ -74,7 +75,7 @@ function insertDB($id,$r,$p1r,$p2r,$c,$case,$o,$rs1,$rs2){
         mysqli_query($conn, $query);
       }
       else{
-        $avg = (floatval($p1r)+floatval($rs2))/2;
+        $avg = (floatval($ndrp1)+floatval($rs2))/2;
       }
       
       $query = "UPDATE rating SET overallscore='".$avg."' where id='".$id."'";
@@ -84,10 +85,11 @@ function insertDB($id,$r,$p1r,$p2r,$c,$case,$o,$rs1,$rs2){
     if($case=="0111"){
       //have all thge score and selected purpose2
       $avg=$o;
+      $ndrp2=$_REQUEST['ndr'];
       if(!is_numeric($rs2)){
-        $avg = (floatval($p2r)+floatval($rs1))/2;
+        $avg = (floatval($ndrp2)+floatval($rs1))/2;
       }
-      $query = "UPDATE rating SET purpose2score='".$p2r."' where id='".$id."'";
+      $query = "UPDATE rating SET purpose2score='".$ndrp2."' where id='".$id."'";
       mysqli_query($conn, $query);
      if(!is_numeric($rs1)){
      
@@ -95,7 +97,7 @@ function insertDB($id,$r,$p1r,$p2r,$c,$case,$o,$rs1,$rs2){
       mysqli_query($conn, $query);
      }
      else{
-      $avg = (floatval($p2r)+floatval($rs1))/2;
+      $avg = (floatval($ndrp2)+floatval($rs1))/2;
      }
     
      
