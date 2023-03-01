@@ -318,6 +318,7 @@ const App = {
 							//Case 3 have all the scores
 							window.alert("rating1&rating 2 not eaqiual 0")
 							if($(selectedrobopurpose).val()=="0"){// if overall
+								window.alert("Selected overall")
 								var data=await $.post("../docs/rating.php", {id: App.selectedRobos[q]});
 								//data.append(App.selectedRatings[q]);
 								var myArray = JSON.parse(data);
@@ -344,6 +345,7 @@ const App = {
 								keywords2:keywords2
 								})
 								// if rs1 is not a number p1r=App.selectedRatings[q], else p1r is a result of NDR
+								
 								if(isNaN(ratingPupose1)){
 									window.alert("Not calculating NDR=selected value")
 									ndrvalue=App.selectedRatings[q];
@@ -383,14 +385,25 @@ const App = {
 									ndrvalue=reputationscore;
 
 								}
+								//check purpose2 score is a number, if yes no need for predicted score for pupose2
+								var rp2=await $.post("../docs/getPurpose2Rating.php", {id: App.selectedRobos[q]});
+								
+								var p;
+								if(isNaN(rp2)){
+									p=await $.post("../docs/updateMultiroboRating.php", {id: App.selectedRobos[q],r:"0",p1r:App.selectedRatings[q],p2r:r2,c:App.account,case:"1011",o:ratingOverAll,rs1:ratingPupose1,rs2:ratingPupose2,"ndr":ndrvalue});	
+								}
+								else{
+									p=await $.post("../docs/updateMultiroboRating.php", {id: App.selectedRobos[q],r:"0",p1r:App.selectedRatings[q],p2r:0,c:App.account,case:"1011",o:ratingOverAll,rs1:ratingPupose1,rs2:ratingPupose2,"ndr":ndrvalue});
+								}
 
-								var p=await $.post("../docs/updateMultiroboRating.php", {id: App.selectedRobos[q],r:"0",p1r:App.selectedRatings[q],p2r:r2,c:App.account,case:"1011",o:ratingOverAll,rs1:ratingPupose1,rs2:ratingPupose2,"ndr":ndrvalue});	
+								
+								
 								reputationscores.push(Number(p)*100);
 								
 							}
 							if($(selectedrobopurpose).val()=="2"){// if purpose2 rating
 								//predict p1 score using obj4
-								//window.alert("no rating selected purpose2")
+								window.alert("no rating selected purpose2")
 							   	r2=await $.post("../docs/obj4.php",{p1r:App.selectedRatings[q],
 								p2r:ratingPupose1,
 								r:ratingOverAll,
@@ -430,7 +443,25 @@ const App = {
 
 								}
 								
-								var p=await $.post("../docs/updateMultiroboRating.php", {id: App.selectedRobos[q],r:"0",p1r:r2,p2r:App.selectedRatings[q],c:App.account,case:"0111",o:ratingOverAll,rs1:ratingPupose1,rs2:ratingPupose2,"ndr":ndrvalue});	
+									
+								//check purpose2 score is a number, if yes no need for predicted score for pupose2
+								
+								var rp1=await $.post("../docs/getPurppose1Rating.php", {id: App.selectedRobos[q]});
+								console.log("rp1="+rp1)
+								window.alert("check rp1")
+								
+								var p;
+								if(isNaN(rp1)){
+									 p=await $.post("../docs/updateMultiroboRating.php", {id: App.selectedRobos[q],r:"0",p1r:r2,p2r:App.selectedRatings[q],c:App.account,case:"0111",o:ratingOverAll,rs1:ratingPupose1,rs2:ratingPupose2,"ndr":ndrvalue});
+									 console.log("sending rp1="+r2);
+									 window.alert("check db value")
+								}
+								else{
+									p=await $.post("../docs/updateMultiroboRating.php", {id: App.selectedRobos[q],r:"0",p1r:0,p2r:App.selectedRatings[q],c:App.account,case:"0111",o:ratingOverAll,rs1:ratingPupose1,rs2:ratingPupose2,"ndr":ndrvalue});
+									console.log("sending rp1="+"0");
+									window.alert("check db value")
+								}
+
 								reputationscores.push(Number(p)*100);	
 							}
 						}
